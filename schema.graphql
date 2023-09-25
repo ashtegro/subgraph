@@ -24,3 +24,15 @@ type TotalVolume @entity {
   id: ID!
   volume: BigDecimal!
 }
+
+type DailyVolume @entity {
+  id: ID!
+  date: Int!
+  volume: BigDecimal!
+}
+
+type WeeklyVolume @entity {
+  id: ID!
+  week: Int!
+  volume: BigDecimal!
+}
