@@ -1,0 +1,8 @@
+{
+  "mainnet": {
+    "tegro": {
+      "address": "0x9c11f816f0a8A235B3c3674C8EFD89C805546457",
+      "startBlock": 18035806
+    }
+  }
+}

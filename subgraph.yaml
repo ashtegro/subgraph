@@ -1,0 +1,27 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: tegro
+    network: mainnet
+    source:
+      address: "0x9c11f816f0a8A235B3c3674C8EFD89C805546457"
+      abi: tegro
+      startBlock: 18035806
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - TradeFailed
+        - TradeSuccessful
+      abis:
+        - name: tegro
+          file: ./abis/tegro.json
+      eventHandlers:
+        - event: TradeFailed(uint256)
+          handler: handleTradeFailed
+        - event: TradeSuccessful(indexed address,indexed address,address,address,uint256,uint256,bytes32)
+          handler: handleTradeSuccessful
+      file: ./src/tegro.ts

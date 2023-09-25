@@ -1,0 +1,21 @@
+type TradeFailed @entity(immutable: true) {
+  id: Bytes!
+  index: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TradeSuccessful @entity(immutable: true) {
+  id: Bytes!
+  maker: Bytes! # address
+  taker: Bytes! # address
+  makerAsset: Bytes! # address
+  takerAsset: Bytes! # address
+  makerAmount: BigInt! # uint256
+  takerAmount: BigInt! # uint256
+  orderHash: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
