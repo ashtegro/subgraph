@@ -16,6 +16,7 @@ dataSources:
       entities:
         - TradeFailed
         - TradeSuccessful
+        - TotalVolume
       abis:
         - name: tegro
           file: ./abis/tegro.json

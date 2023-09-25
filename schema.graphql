@@ -19,3 +19,8 @@ type TradeSuccessful @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
+type TotalVolume @entity {
+  id: ID!
+  volume: BigDecimal!
+}
