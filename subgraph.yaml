@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: tegro
-    network: matic
+    network: arbitrum-one
     source:
-      address: "0xf360bd82c74c6613c55c3441281113ce196d629d"
+      address: "0x4d0c3BC9ad8f0796186Fd3314ae520d43436d87e"
       abi: tegro
-      startBlock: 46980536
+      startBlock: 132226152
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

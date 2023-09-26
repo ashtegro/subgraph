@@ -1,8 +1,8 @@
 {
-  "mainnet": {
+  "arbitrum-one": {
     "tegro": {
-      "address": "0x9c11f816f0a8A235B3c3674C8EFD89C805546457",
-      "startBlock": 18035806
+      "address": "0x4d0c3BC9ad8f0796186Fd3314ae520d43436d87e",
+      "startBlock": 132226152
     }
   }
 }
