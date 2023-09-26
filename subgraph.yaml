@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: tegro
-    network: avalanche
+    network: optimism
     source:
-      address: "0x08fEA5882FABD20fF8067A14B134E937d9b4220D"
+      address: "0x113128f65D830b5295cef847597F4655f3d8E47C"
       abi: tegro
-      startBlock: 35346885
+      startBlock: 109722927
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
