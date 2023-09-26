@@ -1,8 +1,8 @@
 {
-  "bsc": {
+  "avalanche": {
     "tegro": {
-      "address": "0x64E7d3759D6fD46a49f8e768003559B684a88B6A",
-      "startBlock": 31850478
+      "address": "0x08fEA5882FABD20fF8067A14B134E937d9b4220D",
+      "startBlock": 35346885
     }
   }
 }

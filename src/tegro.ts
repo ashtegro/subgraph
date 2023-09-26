@@ -5,7 +5,7 @@ import {
 import { TradeFailed, TradeSuccessful, TotalVolume, DailyVolume, WeeklyVolume } from "../generated/schema"
 import { BigInt, BigDecimal, log } from "@graphprotocol/graph-ts";
 
-const USDT_ADDRESS = "0x55d398326f99059ff775485246999027b3197955";
+const USDT_ADDRESS = "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7";
 
 export function handleTradeFailed(event: TradeFailedEvent): void {
   let entity = new TradeFailed(
