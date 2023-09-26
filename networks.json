@@ -1,8 +1,8 @@
 {
-  "arbitrum-one": {
+  "bsc": {
     "tegro": {
-      "address": "0x4d0c3BC9ad8f0796186Fd3314ae520d43436d87e",
-      "startBlock": 132226152
+      "address": "0x64E7d3759D6fD46a49f8e768003559B684a88B6A",
+      "startBlock": 31850478
     }
   }
 }
