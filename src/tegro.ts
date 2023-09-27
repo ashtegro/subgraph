@@ -95,6 +95,6 @@ export function handleTradeSuccessful(event: TradeSuccessfulEvent): void {
 }
 
 function toHumanReadable(amount: BigInt): BigDecimal {
-  let decimals = BigDecimal.fromString("1000000") // 6 decimals
+  let decimals = BigDecimal.fromString("1000000000000000000") // 6 decimals
   return amount.toBigDecimal().div(decimals)
 }
