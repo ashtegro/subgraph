@@ -36,3 +36,8 @@ type WeeklyVolume @entity {
   week: Int!
   volume: BigDecimal!
 }
+
+type WalletVolume @entity {
+  id: ID! # this will be the wallet address itself
+  totalUSDTVolume: BigDecimal!
+}
