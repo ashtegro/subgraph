@@ -2,8 +2,8 @@ import {
   TradeFailed as TradeFailedEvent,
   TradeSuccessful as TradeSuccessfulEvent
 } from "../generated/tegro/tegro"
-import { TradeFailed, TradeSuccessful, TotalVolume, DailyVolume, WeeklyVolume } from "../generated/schema"
-import { BigInt, BigDecimal, log } from "@graphprotocol/graph-ts";
+import { TradeFailed, TradeSuccessful, TotalVolume, DailyVolume, WeeklyVolume, WalletVolume } from "../generated/schema"
+import { BigInt, BigDecimal, log, Bytes } from "@graphprotocol/graph-ts";
 
 const USDT_ADDRESS = "0x55d398326f99059ff775485246999027b3197955";
 
@@ -92,9 +92,30 @@ export function handleTradeSuccessful(event: TradeSuccessfulEvent): void {
 
   weeklyVolume.volume = weeklyVolume.volume.plus(usdtVolume);
   weeklyVolume.save();
+
+
+  //Handle wallet volumes
+
+  // Update maker's total USDT volume
+  updateWalletVolume(event.params.maker, usdtVolume);
+
+  // Update taker's total USDT volume
+  updateWalletVolume(event.params.taker, usdtVolume);
 }
 
 function toHumanReadable(amount: BigInt): BigDecimal {
   let decimals = BigDecimal.fromString("1000000000000000000") // 6 decimals
   return amount.toBigDecimal().div(decimals)
+}
+
+function updateWalletVolume(walletAddress: Bytes, volume: BigDecimal): void {
+  let walletVolume = WalletVolume.load(walletAddress.toHexString());
+
+  if (walletVolume == null) {
+    walletVolume = new WalletVolume(walletAddress.toHexString());
+    walletVolume.totalUSDTVolume = BigDecimal.fromString("0");
+  }
+
+  walletVolume.totalUSDTVolume = walletVolume.totalUSDTVolume.plus(volume);
+  walletVolume.save();
 }
