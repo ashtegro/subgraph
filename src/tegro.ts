@@ -1,3 +1,6 @@
+
+const USDT_ADDRESS = "0xdac17f958d2ee523a2206206994597c13d831ec7";
+
 import {
   TradeFailed as TradeFailedEvent,
   TradeSuccessful as TradeSuccessfulEvent
@@ -6,7 +9,6 @@ import {
 import { TradeFailed, TradeSuccessful, TotalVolume, DailyVolume, WeeklyVolume, WalletVolume, DailyWalletVolume, WeeklyWalletVolume } from "../generated/schema"
 import { BigInt, BigDecimal, log, Bytes } from "@graphprotocol/graph-ts";
 
-const USDT_ADDRESS = "0xdac17f958d2ee523a2206206994597c13d831ec7";
 
 export function handleTradeFailed(event: TradeFailedEvent): void {
   let entity = new TradeFailed(
