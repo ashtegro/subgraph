@@ -1,11 +1,13 @@
+const USDT_ADDRESS = "0x55d398326f99059ff775485246999027b3197955";
+
 import {
   TradeFailed as TradeFailedEvent,
   TradeSuccessful as TradeSuccessfulEvent
 } from "../generated/tegro/tegro"
-import { TradeFailed, TradeSuccessful, TotalVolume, DailyVolume, WeeklyVolume, WalletVolume } from "../generated/schema"
+
+import { TradeFailed, TradeSuccessful, TotalVolume, DailyVolume, WeeklyVolume, WalletVolume, DailyWalletVolume, WeeklyWalletVolume } from "../generated/schema"
 import { BigInt, BigDecimal, log, Bytes } from "@graphprotocol/graph-ts";
 
-const USDT_ADDRESS = "0x55d398326f99059ff775485246999027b3197955";
 
 export function handleTradeFailed(event: TradeFailedEvent): void {
   let entity = new TradeFailed(
@@ -93,29 +95,50 @@ export function handleTradeSuccessful(event: TradeSuccessfulEvent): void {
   weeklyVolume.volume = weeklyVolume.volume.plus(usdtVolume);
   weeklyVolume.save();
 
-
   //Handle wallet volumes
-
-  // Update maker's total USDT volume
-  updateWalletVolume(event.params.maker, usdtVolume);
-
-  // Update taker's total USDT volume
-  updateWalletVolume(event.params.taker, usdtVolume);
-}
-
-function toHumanReadable(amount: BigInt): BigDecimal {
-  let decimals = BigDecimal.fromString("1000000000000000000") // 6 decimals
-  return amount.toBigDecimal().div(decimals)
-}
-
-function updateWalletVolume(walletAddress: Bytes, volume: BigDecimal): void {
-  let walletVolume = WalletVolume.load(walletAddress.toHexString());
+  // Update or create total volume for the wallet
+  let walletAddress = event.params.maker.toHexString();
+  let walletVolume = WalletVolume.load(walletAddress);
 
   if (walletVolume == null) {
-    walletVolume = new WalletVolume(walletAddress.toHexString());
+    walletVolume = new WalletVolume(walletAddress);
     walletVolume.totalUSDTVolume = BigDecimal.fromString("0");
   }
 
-  walletVolume.totalUSDTVolume = walletVolume.totalUSDTVolume.plus(volume);
+  walletVolume.totalUSDTVolume = walletVolume.totalUSDTVolume.plus(usdtVolume);
   walletVolume.save();
+
+  // For daily wallet volume
+  let dailyWalletVolumeId = walletAddress.concat('-').concat(date.toString());
+  let dailyWalletVolume = DailyWalletVolume.load(dailyWalletVolumeId);
+
+  if (dailyWalletVolume == null) {
+    dailyWalletVolume = new DailyWalletVolume(dailyWalletVolumeId);
+    dailyWalletVolume.wallet = event.params.maker;
+    dailyWalletVolume.date = date;
+    dailyWalletVolume.volume = BigDecimal.fromString("0");
+  }
+
+  dailyWalletVolume.volume = dailyWalletVolume.volume.plus(usdtVolume);
+  dailyWalletVolume.save();
+
+  // For weekly wallet volume
+  let weeklyWalletVolumeId = walletAddress.concat('-').concat(week.toString());
+  let weeklyWalletVolume = WeeklyWalletVolume.load(weeklyWalletVolumeId);
+
+  if (weeklyWalletVolume == null) {
+    weeklyWalletVolume = new WeeklyWalletVolume(weeklyWalletVolumeId);
+    weeklyWalletVolume.wallet = event.params.maker;
+    weeklyWalletVolume.week = week;
+    weeklyWalletVolume.volume = BigDecimal.fromString("0");
+  }
+
+  weeklyWalletVolume.volume = weeklyWalletVolume.volume.plus(usdtVolume);
+  weeklyWalletVolume.save();
 }
+
+function toHumanReadable(amount: BigInt): BigDecimal {
+  let decimals = BigDecimal.fromString("1000000") // 6 decimals
+  return amount.toBigDecimal().div(decimals)
+}
+
