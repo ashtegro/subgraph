@@ -98,13 +98,25 @@ export function handleTradeSuccessful(event: TradeSuccessfulEvent): void {
   weeklyVolume.volume = weeklyVolume.volume.plus(usdtVolume);
   weeklyVolume.save();
 
+  if (entity.maker != entity.taker) {
+    handleWalletVolumes(entity.maker, usdtVolume, timestamp);
+    handleWalletVolumes(entity.taker, usdtVolume, timestamp);
+  }
+}
+
+function handleWalletVolumes(walletAddressInBytes: Bytes, usdtVolume: BigDecimal, timestamp: BigInt): void {
+
+  // Convert the block timestamp to date and week number
+  let date = timestamp.toI32() / 86400; // convert timestamp to days since epoch
+  let week = date / 7;
+
   //Handle wallet volumes
   // Update or create total volume for the wallet
-  let walletAddress = usdtWallet.toHexString();
-  let walletVolume = WalletVolume.load(walletAddress);
+  let wallet = walletAddressInBytes.toHexString();
+  let walletVolume = WalletVolume.load(wallet);
 
   if (walletVolume == null) {
-    walletVolume = new WalletVolume(walletAddress);
+    walletVolume = new WalletVolume(wallet);
     walletVolume.totalUSDTVolume = BigDecimal.fromString("0");
   }
 
@@ -112,12 +124,12 @@ export function handleTradeSuccessful(event: TradeSuccessfulEvent): void {
   walletVolume.save();
 
   // For daily wallet volume
-  let dailyWalletVolumeId = walletAddress.concat('-').concat(date.toString());
+  let dailyWalletVolumeId = wallet.concat('-').concat(date.toString());
   let dailyWalletVolume = DailyWalletVolume.load(dailyWalletVolumeId);
 
   if (dailyWalletVolume == null) {
     dailyWalletVolume = new DailyWalletVolume(dailyWalletVolumeId);
-    dailyWalletVolume.wallet = event.params.maker;
+    dailyWalletVolume.wallet = walletAddressInBytes;
     dailyWalletVolume.date = date;
     dailyWalletVolume.volume = BigDecimal.fromString("0");
   }
@@ -126,12 +138,12 @@ export function handleTradeSuccessful(event: TradeSuccessfulEvent): void {
   dailyWalletVolume.save();
 
   // For weekly wallet volume
-  let weeklyWalletVolumeId = walletAddress.concat('-').concat(week.toString());
+  let weeklyWalletVolumeId = wallet.concat('-').concat(week.toString());
   let weeklyWalletVolume = WeeklyWalletVolume.load(weeklyWalletVolumeId);
 
   if (weeklyWalletVolume == null) {
     weeklyWalletVolume = new WeeklyWalletVolume(weeklyWalletVolumeId);
-    weeklyWalletVolume.wallet = event.params.maker;
+    weeklyWalletVolume.wallet = walletAddressInBytes;
     weeklyWalletVolume.week = week;
     weeklyWalletVolume.volume = BigDecimal.fromString("0");
   }
