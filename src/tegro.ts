@@ -43,13 +43,16 @@ export function handleTradeSuccessful(event: TradeSuccessfulEvent): void {
 
   // If the trade involves USDT as makerAsset or takerAsset, update the total volume
   let usdtVolume: BigDecimal;
+  let usdtWallet: Bytes;
   log.info("Maker Asset: {}", [entity.makerAsset.toHexString()]);
   log.info("Taker Asset: {}", [entity.takerAsset.toHexString()]);
 
   if (entity.makerAsset.toHexString() == USDT_ADDRESS) {
     usdtVolume = toHumanReadable(entity.makerAmount);
+    usdtWallet = entity.maker;
   } else if (entity.takerAsset.toHexString() == USDT_ADDRESS) {
     usdtVolume = toHumanReadable(entity.takerAmount);
+    usdtWallet = entity.taker;
   } else {
     return; // If neither the maker nor taker asset is USDT, do not proceed
   }
@@ -97,7 +100,7 @@ export function handleTradeSuccessful(event: TradeSuccessfulEvent): void {
 
   //Handle wallet volumes
   // Update or create total volume for the wallet
-  let walletAddress = event.params.maker.toHexString();
+  let walletAddress = usdtWallet.toHexString();
   let walletVolume = WalletVolume.load(walletAddress);
 
   if (walletVolume == null) {
